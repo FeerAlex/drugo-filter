@@ -6,7 +6,7 @@
 .grid {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 310px;
     border-right: 1px solid #f0f0f0;
 }
 
@@ -16,7 +16,7 @@
 }
 .grid-tlist {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     margin: 0 15px;
 }
 .grid-tlist-item.is-dragged {

@@ -1,8 +1,6 @@
 import { createFrag, getElementUnderClientXY } from './utils';
 import FriendsGrid from './FriendsGrid';
 import SpisokGrid from './SpisokGrid';
-import SpisokEntity from './SpisokEntity';
-import FriendsEntity from './FriendsEntity';
 
 export default class App {
   constructor() {
@@ -28,21 +26,19 @@ export default class App {
 
     body.appendChild(this.friends.Grid);
     body.appendChild(this.spisok.Grid);
-
-    this.loadData();
-  }
-
-  loadData() {
-    this.friends.getEntityData().then(entity => {
-      console.log(entity);
-      this.friends.setData(entity.data);
-      this.friends.renderRows();
-    });
   }
 
   addListener() {
     this.friends.Grid.addEventListener("mousedown", (e) => {
       this.onDragMouseDown(e);
+    });
+
+    this.spisok.Grid.addEventListener("mousedown", (e) => {
+        this.onDragMouseDown(e);
+    });
+
+    this.saveBtn.addEventListener('click', (e) => {
+      this.saveLists();
     });
   }
 
@@ -56,7 +52,7 @@ export default class App {
     this.drag.coords = {
       left: e.clientX - el.getBoundingClientRect().left + pageXOffset,
       top: e.clientY - el.getBoundingClientRect().top + pageYOffset
-    }
+    };
 
     e.preventDefault();
 
@@ -92,6 +88,7 @@ export default class App {
     this.drag.el.classList.add("is-dragged");
     this.drag.initialParent = this.drag.el.parentElement;
     this.drag.nextElement   = this.drag.el.nextElementSibling;
+    this.drag.el.style.width = '279px';
 
     document.body.appendChild(this.drag.el);
 
@@ -105,11 +102,6 @@ export default class App {
     this.drag.currentTargetElem = getElementUnderClientXY(this.drag.el, e.clientX, e.clientY);
 
     this.drag.newDropTarget = this.findDropTarget(e);
-
-    if (this.drag.newDropTarget !== this.drag.dropTarget) {
-      this.drag.dropTarget && this.drag.dropTarget.classList.remove("drag-focus");
-      this.drag.newDropTarget && this.drag.newDropTarget.classList.add("drag-focus");
-    }
 
     this.drag.dropTarget = this.drag.newDropTarget;
 
@@ -208,25 +200,29 @@ export default class App {
   }
 
   updateSingleTask(id, store) {
-    console.log(id, store);
+    if (store === 'SpisokGrid') {
+      let user = this.friends.data.filter(user => user.id === id);
 
-    let res = new SpisokEntity().update();
+      this.spisok.entity.update(user).then(res => {
+        this.spisok.reload();
+        this.friends.entity.remove(id);
+      });
+    }
 
-    console.log(res);
+    if (store === 'FriendsGrid') {
+      let user = this.spisok.data.filter(user => user.id === id);
 
-    // return new Tasks()
-    //     .update(id, Object.keys(store), Object.keys(store).map(k => { return store[k] }))
-    //     .commit()
-    //     .then(res => {
-    //         if (!res) {
-    //             this.notify.error("Не удалось обновить задачу");
-    //             this.updateTasks();
-    //             return res;
-    //         }
+      this.friends.entity.update(user).then(res => {
+        this.friends.reload();
+        this.spisok.entity.remove(id);
 
-    //         this.notify.success("Сохранили");
-    //         this.updateTasks();
+        this.spisok.reload();
+      });
+    }
+  }
 
-    // }).catch(err => { throw err });
+  saveLists() {
+    this.friends.entity.save();
+    this.spisok.entity.save();
   }
 }

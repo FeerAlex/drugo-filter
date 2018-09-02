@@ -4,6 +4,7 @@ export default class Grid {
         this.title = "";
         this.dragged = false;
         this.data = this.data || [];
+        this.entity = this.entity || {};
         this.init();
     }
 
@@ -122,15 +123,10 @@ export default class Grid {
             return;
         }
 
-        data.map(rowData => {
-            this.createRow(tList, rowData);
-        });
+        data.map(rowData => this.createRow(tList, rowData));
 
         this.tBody.replaceChild(tList, this.tList);
         this.tList = tList;
-
-        // let bar = new Scrollbar();
-        // bar.attachViews(this.tBody, this.tList, () => {});
     }
 
     createRow(tList, rowData) {
@@ -151,5 +147,12 @@ export default class Grid {
         this.data = data;
 
         return this;
+    }
+
+    async reload() {
+        let data = await this.entity.loadData();
+
+        this.setData(data);
+        this.renderRows();
     }
 }
