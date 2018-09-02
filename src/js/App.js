@@ -32,21 +32,12 @@ export default class App {
     this.loadData();
   }
 
-  async loadData() {
-    let entity = await new FriendsEntity();
-    let set = this.friends.setData(entity.data);
-    console.log(set);
-    // await this.friends.renderRows();
-    // await console.log(this.friends);
-
-    // new FriendsEntity().then(res => {
-    //             this.ready();
-    //             this.fields.catGrid.setData(res).renderRows();
-    //         });
-    // console.log(new FriendsEntity());
-    // let data = this.friends.entity.data;
-    // this.friends.setData(data);
-    // this.friends.renderRows();
+  loadData() {
+    this.friends.getEntityData().then(entity => {
+      console.log(entity);
+      this.friends.setData(entity.data);
+      this.friends.renderRows();
+    });
   }
 
   addListener() {

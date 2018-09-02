@@ -17,7 +17,13 @@ export default class SpisokGrid extends Grid {
 
     this.setTitleName('Друзья в списке');
 
-    this.data = [];
+    this.data = [{
+        first_name : "Николай",
+        id : 95541,
+        last_name : "Чернобаев",
+        photo_100: "https://pp.userapi.com/c637523/v637523734/6839a/yXjq0JvNjX8.jpg?ava=1"
+    }];
+
 
     super.init();
   }

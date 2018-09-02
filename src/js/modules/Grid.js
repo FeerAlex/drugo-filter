@@ -150,8 +150,6 @@ export default class Grid {
 
         this.data = data;
 
-        console.log('set');
-
         return this;
     }
 }
