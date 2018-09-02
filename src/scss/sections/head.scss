@@ -1,0 +1,14 @@
+.modal__head {
+    height: 45px;
+    background-color: $orange;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+}
+
+.close {
+    display: inline-block;
+    font-size: 0;
+    cursor: pointer;
+}

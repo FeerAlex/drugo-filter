@@ -1,0 +1,63 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+button, input {
+    border: none;
+    outline: none;
+}
+
+.app {
+    width: 100%;
+    height: 100%;
+    background: rgba($black, .4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    width: 620px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.scroll {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 15px;
+    height: 100%;
+    transition: all 150ms linear;
+    cursor: pointer;
+}
+
+.scroll-track {
+    width: 3px;
+    height: 80px;
+    background-color: $gray-200;
+    border-radius: 3px;
+    margin: 0 0 0 6px;
+    transition: opacity 0.15s ease, width 150ms linear, background-color 200ms linear;
+    cursor: pointer;
+}
+
+@import './partials/btn';
+@import './partials/icon';
+@import './partials/typography';
+
+@import './sections/head';
+@import './sections/body';
+@import './sections/foot';

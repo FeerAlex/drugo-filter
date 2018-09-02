@@ -1,0 +1,21 @@
+.icon {
+    display: inline-block;
+}
+
+.icon--close {
+    width: 14px;
+    height: 14px;
+    background-image: url('../img/close.svg');
+}
+
+.icon--add {
+    width: 16px;
+    height: 16px;
+    background-image: url('../img/add.svg');
+}
+
+.icon--cancel {
+    width: 14px;
+    height: 14px;
+    background-image: url('../img/cancel.svg');
+}
