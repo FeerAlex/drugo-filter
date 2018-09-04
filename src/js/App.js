@@ -148,7 +148,6 @@ export default class App {
 
   onDragConfirm() {
     if (this.drag.dropTarget === this.drag.initialParent) {
-      this.drag.dropTarget.classList.remove("drag-focus");
       this.onDragCancel();
       this.onDragEnd();
       return;

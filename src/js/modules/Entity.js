@@ -31,8 +31,4 @@ export default class Entity {
 
     return data;
   }
-
-  loadData() {
-    return this.data;
-  }
 }

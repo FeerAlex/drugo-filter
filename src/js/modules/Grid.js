@@ -100,7 +100,12 @@ export default class Grid {
     }
 
     async reload() {
-        let data = await this.entity.loadData();
+        let data = await this.entity.data.sort((a, b) => {
+            let fullNameA = `${a.first_name} ${a.last_name}`;
+            let fullNameB = `${b.first_name} ${b.last_name}`;
+
+            return fullNameA.localeCompare(fullNameB);
+        });
 
         this.setData(data);
         this.renderRows();
