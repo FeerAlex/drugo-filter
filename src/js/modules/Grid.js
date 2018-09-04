@@ -1,3 +1,5 @@
+import { createFrag } from '../utils';
+
 export default class Grid {
     constructor(opts) {
         this.drag = {};
@@ -17,10 +19,6 @@ export default class Grid {
         this.tHead.addEventListener("input", (e) => {
             this.filterGrid(e);
         });
-
-        // this.Grid.addEventListener("mousedown", (e) => {
-        //     this.onDragMouseDown(e);
-        // });
     }
 
     findDropTarget (e) {
@@ -33,7 +31,7 @@ export default class Grid {
     }
 
     getGridElem(e) {
-        return e.target.closest('.grid-tList-item');
+        return e.target.closest('.grid-tlist-item');
     }
 
     getData() {
@@ -56,62 +54,12 @@ export default class Grid {
     }
 
     createGrid() {
-        this.Grid = document.createElement("div");
-        this.Grid.classList.add("grid");
+        this.Grid = createFrag('#grid', this);
+        this.tHead = this.Grid.querySelector('.grid-thead');
+        this.tBody = this.Grid.querySelector('.grid-tbody');
+        this.tList = this.Grid.querySelector('.grid-tlist');
 
-        this.tHead = document.createElement("div");
-        this.tHead.classList.add("grid-thead");
-
-        this.tBody = document.createElement("div");
-        this.tBody.classList.add("grid-tbody");
-
-        this.tList = document.createElement("div");
-        this.tList.classList.add("grid-tlist");
-        this.tList.setAttribute('data-grid-name', this.constructor.name);
-
-        this.tBody.appendChild(this.tList);
-
-        this.Grid.appendChild(this.tHead);
-        this.Grid.appendChild(this.tBody);
-
-        this.createHeader();
         this.renderRows();
-    }
-
-    createHeader() {
-        let div = document.createElement('div');
-        let input = document.createElement('input');
-        let span = document.createElement('span');
-
-        let headRow = div.cloneNode();
-        headRow.classList.add("grid-thead-row");
-
-        let filterInput = input.cloneNode();
-        filterInput.classList.add("grid-filter-input");
-        filterInput.setAttribute("placeholder", "Начните вводить имя друга");
-        let filterButton = div.cloneNode();
-        filterButton.classList.add("grid-filter-btn");
-
-        let filterBlock = div.cloneNode();
-        filterBlock.classList.add("grid-filter-block");
-        filterBlock.appendChild(filterInput);
-        filterBlock.appendChild(filterButton);
-
-        let headCell     = div.cloneNode();
-        let headCellSpan = span.cloneNode();
-        let filter = filterBlock.cloneNode(true);
-
-        headCellSpan.classList.add("grid-thead-title");
-        headCellSpan.textContent = this.title;
-
-        headCell.classList.add("grid-thead-cell");
-
-        headCell.appendChild(filter);
-        headCell.appendChild(headCellSpan);
-
-        headRow.appendChild(headCell);
-
-        this.tHead.appendChild(headRow);
     }
 
     renderRows() {
@@ -130,15 +78,18 @@ export default class Grid {
     }
 
     createRow(tList, rowData) {
-        let el = document.createElement('div');
-        let source = document.querySelector('#book').innerHTML;
-        let render = Handlebars.compile(source);
-        let template = render(rowData);
+        let item = createFrag('#book', rowData);
 
-        el.innerHTML = template;
-        el.setAttribute('data-id', rowData.id);
-        el.classList.add('grid-tlist-item');
-        tList.appendChild(el);
+        item.querySelector('.js-add').addEventListener('click', (e) => {
+           let el = this.getGridElem(e);
+           
+           let gridName  = el.getAttribute("data-grid-name");
+           let userid = parseInt(el.getAttribute("data-id"), 10);
+
+           console.log(el);
+        })
+
+        tList.appendChild(item);
     }
 
     setData(data) {

@@ -29,13 +29,44 @@ html(lang="ru")
         </div>
       </div>
 
+    script#head(type="text/x-handlebars-template").
+      <div class="grid-thead">
+        <div class="grid-thead-row">
+          <div class="grid-thead-cell">
+            <div class="grid-filter-block">
+              <input class="grid-filter-input" placeholder="Начните вводить имя друга">
+              <div class="grid-filter-btn"></div>
+            </div>
+            <span class="grid-thead-title">{{title}}</span>
+          </div>
+        </div>
+      </div>
+    
+    script#grid(type="text/x-handlebars-template").
+      <div class="grid">
+        <div class="grid-thead">
+          <div class="grid-thead-row">
+            <div class="grid-thead-cell">
+              <div class="grid-filter-block">
+                <input class="grid-filter-input" placeholder="Начните вводить имя друга">
+                <div class="grid-filter-btn"></div>
+              </div>
+              <span class="grid-thead-title">{{title}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid-tbody">
+          <div class="grid-tlist" data-grid-name="{{constructor.name}}"></div>
+        </div>
+      </div>
+
     script#book(type="text/x-handlebars-template").
-      <div class="body__item">
+      <div class="body__item grid-tlist-item" data-id="{{id}}">
         <div class="body__item-img">
           <img src={{photo_100}} alt=""/>
         </div>
         <span class="body__item-name">{{first_name}} {{last_name}}</span>
         <div class="body__item-action">
-          <div class="icon icon--add"></div>
+          <div class="icon icon--add js-add"></div>
         </div>
       </div>
