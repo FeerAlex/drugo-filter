@@ -179,16 +179,11 @@ export default class App {
   }
 
   compileDom() {
-    let app =  this.createAppContainer();
+    let app = document.createElement('div');
+    app.classList.add('app');
     app.appendChild(createFrag('#app', this));
 
     return app;
-  }
-
-  createAppContainer() {
-    let appCont = document.createElement('div');
-    appCont.classList.add('app');
-    return appCont;
   }
 
   appendBody() {

@@ -28,8 +28,8 @@ html(lang="ru")
           <button class="btn" type="button">Сохранить</button>
         </div>
       </div>
-
-    script#head(type="text/x-handlebars-template").
+    
+    script#grid(type="text/x-handlebars-template").
       <div class="grid-thead">
         <div class="grid-thead-row">
           <div class="grid-thead-cell">
@@ -41,23 +41,8 @@ html(lang="ru")
           </div>
         </div>
       </div>
-    
-    script#grid(type="text/x-handlebars-template").
-      <div class="grid">
-        <div class="grid-thead">
-          <div class="grid-thead-row">
-            <div class="grid-thead-cell">
-              <div class="grid-filter-block">
-                <input class="grid-filter-input" placeholder="Начните вводить имя друга">
-                <div class="grid-filter-btn"></div>
-              </div>
-              <span class="grid-thead-title">{{title}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="grid-tbody">
-          <div class="grid-tlist" data-grid-name="{{constructor.name}}"></div>
-        </div>
+      <div class="grid-tbody">
+        <div class="grid-tlist" data-grid-name="{{constructor.name}}"></div>
       </div>
 
     script#book(type="text/x-handlebars-template").

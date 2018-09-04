@@ -19,6 +19,10 @@ export default class Grid {
         this.tHead.addEventListener("input", (e) => {
             this.filterGrid(e);
         });
+
+        this.tList.addEventListener("click", (e) => {
+            console.log(e);
+        });
     }
 
     findDropTarget (e) {
@@ -26,7 +30,7 @@ export default class Grid {
             return null;
         }
 
-        let elem = this.drag.currentTargetElem.closest(".grid-tList");
+        let elem = this.drag.currentTargetElem.closest(".grid-tlist");
         return elem;
     }
 
@@ -54,15 +58,17 @@ export default class Grid {
     }
 
     createGrid() {
-        this.Grid = createFrag('#grid', this);
+        this.Grid = document.createElement('div');
+        this.Grid.classList.add('grid');
+        this.Grid.appendChild(createFrag('#grid', this));
+
         this.tHead = this.Grid.querySelector('.grid-thead');
         this.tBody = this.Grid.querySelector('.grid-tbody');
         this.tList = this.Grid.querySelector('.grid-tlist');
-
-        this.renderRows();
     }
 
     renderRows() {
+        console.log(`Render ${this.constructor.name}`);
         let tList = this.tList.cloneNode();
         let data = this.getData();
 
@@ -80,14 +86,16 @@ export default class Grid {
     createRow(tList, rowData) {
         let item = createFrag('#book', rowData);
 
+        
+
         item.querySelector('.js-add').addEventListener('click', (e) => {
            let el = this.getGridElem(e);
            
            let gridName  = el.getAttribute("data-grid-name");
            let userid = parseInt(el.getAttribute("data-id"), 10);
 
-           console.log(el);
-        })
+           console.log(e);
+        });
 
         tList.appendChild(item);
     }
