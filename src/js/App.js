@@ -210,8 +210,6 @@ export default class App {
       this.friends.entity.update(user).then(res => {
         this.friends.reload();
         this.spisok.entity.remove(id);
-
-        this.spisok.reload();
       });
     }
   }
