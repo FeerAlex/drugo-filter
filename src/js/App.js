@@ -4,8 +4,8 @@ import SpisokGrid from './SpisokGrid';
 
 export default class App {
   constructor() {
-    this.friends = new FriendsGrid();
-    this.spisok = new SpisokGrid();
+    this.FriendsGrid = new FriendsGrid();
+    this.SpisokGrid = new SpisokGrid();
 
     this.drag = {};
 
@@ -24,16 +24,16 @@ export default class App {
 
     let body = document.querySelector('.modal__body');
 
-    body.appendChild(this.friends.Grid);
-    body.appendChild(this.spisok.Grid);
+    body.appendChild(this.FriendsGrid.Grid);
+    body.appendChild(this.SpisokGrid.Grid);
   }
 
   addListener() {
-    this.friends.Grid.addEventListener("mousedown", (e) => {
+    this.FriendsGrid.Grid.addEventListener("mousedown", (e) => {
       this.onDragMouseDown(e);
     });
 
-    this.spisok.Grid.addEventListener("mousedown", (e) => {
+    this.SpisokGrid.Grid.addEventListener("mousedown", (e) => {
         this.onDragMouseDown(e);
     });
 
@@ -69,15 +69,16 @@ export default class App {
     if (!this.drag.el) return;
 
     if (!this.drag.avatar) { // начали двигать или нет
+      // если практически не двинули элемент - то не начинаем драг
       if (Math.abs(e.pageX - this.drag.downX) < 5 && Math.abs(e.pageY - this.drag.downY) < 5) {
-          return;  // если практически не двинули элемент - то не начинаем драг
+        return;
       }
 
       this.drag.avatar = this.onDragStart();
 
       if (!this.drag.avatar) {
-          this.cleanUpDragObject();
-          return;
+        this.cleanUpDragObject();
+        return;
       }
     }
 
@@ -148,10 +149,11 @@ export default class App {
         return;
     }
 
-    let gridName  = this.drag.dropTarget.getAttribute("data-grid-name");
+    let toGrid  = this.drag.dropTarget.getAttribute("data-grid-name");
+    let fromGrid = this.drag.initialParent.getAttribute("data-grid-name");
     let userid = parseInt(this.drag.el.getAttribute("data-id"), 10);
 
-    this.updateSingleTask(userid, gridName);
+    this.updateSingleTask(userid, fromGrid, toGrid);
     this.drag.el.remove();
     this.onDragEnd();
   }
@@ -194,28 +196,17 @@ export default class App {
     body.insertBefore(this.app, body.firstChild);
   }
 
-  updateSingleTask(id, store) {
-    if (store === 'SpisokGrid') {
-      let user = this.friends.data.filter(user => user.id === id);
+  updateSingleTask(id, fromGrid, toGrid) {
+    let user = this[fromGrid].data.filter(user => user.id === id);
 
-      this.spisok.entity.update(user).then(res => {
-        this.spisok.reload();
-        this.friends.entity.remove(id);
-      });
-    }
-
-    if (store === 'FriendsGrid') {
-      let user = this.spisok.data.filter(user => user.id === id);
-
-      this.friends.entity.update(user).then(res => {
-        this.friends.reload();
-        this.spisok.entity.remove(id);
-      });
-    }
+    this[toGrid].entity.update(user).then(res => {
+      this[toGrid].reload();
+      this[fromGrid].entity.remove(id);
+    });
   }
 
   saveLists() {
-    this.friends.entity.save();
-    this.spisok.entity.save();
+    this.FriendsGrid.entity.save();
+    this.SpisokGrid.entity.save();
   }
 }
