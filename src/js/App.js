@@ -34,8 +34,16 @@ export default class App {
     });
 
     this.SpisokGrid.Grid.addEventListener("mousedown", (e) => {
-        this.onDragMouseDown(e);
+      this.onDragMouseDown(e);
     });
+
+    this.FriendsGrid.clickHandler = (id) => {
+      this.updateGrids(id, 'FriendsGrid', 'SpisokGrid');
+    };
+
+    this.SpisokGrid.clickHandler = (id) => {
+      this.updateGrids(id, 'SpisokGrid', 'FriendsGrid');
+    };
 
     this.saveBtn.addEventListener('click', (e) => {
       this.saveLists();
@@ -43,7 +51,7 @@ export default class App {
   }
 
   onDragMouseDown(e) {
-    const el  = e.target.closest('.grid-tlist-item');
+    const el = e.target.closest('.grid-tlist-item');
 
     if (!el) return;
 
@@ -88,7 +96,7 @@ export default class App {
   onDragStart() {
     this.drag.el.classList.add("is-dragged");
     this.drag.initialParent = this.drag.el.parentElement;
-    this.drag.nextElement   = this.drag.el.nextElementSibling;
+    this.drag.nextElement = this.drag.el.nextElementSibling;
     this.drag.el.style.width = '279px';
 
     document.body.appendChild(this.drag.el);
@@ -134,26 +142,23 @@ export default class App {
   };
 
   cleanUpDragObject() {
-    this.drag.avatar        = null;
-    this.drag.dropTarget    = null;
+    this.drag.avatar = null;
+    this.drag.dropTarget = null;
   };
 
   onDragConfirm() {
-    /**
-     * Если вернул в ту же группу - сохранять не надо, просто отмена
-     */
-    if (this.drag.dropTarget.querySelector("grid-tlist") === this.drag.initialParent) {
-        this.drag.dropTarget.classList.remove("drag-focus");
-        this.onDragCancel();
-        this.onDragEnd();
-        return;
+    if (this.drag.dropTarget === this.drag.initialParent) {
+      this.drag.dropTarget.classList.remove("drag-focus");
+      this.onDragCancel();
+      this.onDragEnd();
+      return;
     }
 
-    let toGrid  = this.drag.dropTarget.getAttribute("data-grid-name");
+    let toGrid = this.drag.dropTarget.getAttribute("data-grid-name");
     let fromGrid = this.drag.initialParent.getAttribute("data-grid-name");
     let userid = parseInt(this.drag.el.getAttribute("data-id"), 10);
 
-    this.updateSingleTask(userid, fromGrid, toGrid);
+    this.updateGrids(userid, fromGrid, toGrid);
     this.drag.el.remove();
     this.onDragEnd();
   }
@@ -174,10 +179,11 @@ export default class App {
     this.onDragEnd();
   };
 
-  removeDraggable (el) {
+  removeDraggable(el) {
     el.classList.remove("is-dragged");
     el.style.left = "";
     el.style.top = "";
+    el.style.width = "";
   }
 
   compileDom() {
@@ -191,18 +197,17 @@ export default class App {
   appendBody() {
     let body = document.querySelector('body');
 
-    if (!body) throw new Error (`<body> not found`);
+    if (!body) throw new Error(`<body> not found`);
 
     body.insertBefore(this.app, body.firstChild);
   }
 
-  updateSingleTask(id, fromGrid, toGrid) {
-    let user = this[fromGrid].data.filter(user => user.id === id);
-
-    this[toGrid].entity.update(user).then(res => {
-      this[toGrid].reload();
-      this[fromGrid].entity.remove(id);
-    });
+  async updateGrids(id, fromGrid, toGrid) {
+    let user = await this[fromGrid].entity.find(id);
+    await this[toGrid].entity.update(user);
+    await this[fromGrid].entity.remove(id);
+    await this[toGrid].reload();
+    await this[fromGrid].reload();
   }
 
   saveLists() {

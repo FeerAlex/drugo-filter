@@ -15,10 +15,6 @@ export default class FriendsEntity extends Entity {
     this.data = data || [];
   }
 
-  async loadData() {
-    return this.data;
-  }
-
   async loadVkData() {
     await vk.login(config.vk.apiID, 2);
     let data = await vk.getFriends({ fields: 'photo_100' });

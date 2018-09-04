@@ -4,10 +4,16 @@ export default class Entity {
     this.dataObj = dataObj;
   }
 
-  async update(users) {
-    await users.map((user) => this.data.push(user));
+  async update(user) {
+    if (this.find(user.id)) return;
+
+    await this.data.push(user);
 
     return this;
+  }
+
+  find(id) {
+    return this.data.find(user => user.id === id);
   }
 
   remove(id) {
@@ -24,5 +30,9 @@ export default class Entity {
     let data = JSON.parse(localStorage[this.dataObj] || null);
 
     return data;
+  }
+
+  loadData() {
+    return this.data;
   }
 }

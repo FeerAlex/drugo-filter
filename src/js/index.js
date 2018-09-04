@@ -7,6 +7,7 @@ let friends = localStorage.friends;
 let load = async () => {
   await new FriendsEntity().loadVkData().then(data => {
     localStorage.friends = JSON.stringify(data);
+    localStorage.spisok = null;
   });
 
   await new App();

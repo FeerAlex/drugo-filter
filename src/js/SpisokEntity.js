@@ -12,8 +12,4 @@ export default class SpisokEntity extends Entity {
 
     this.data = data || [];
   }
-
-  async loadData() {
-    return this.data;
-  }
 }

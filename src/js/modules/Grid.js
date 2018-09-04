@@ -17,11 +17,9 @@ export default class Grid {
 
     addListeners() {
         this.tHead.addEventListener("input", (e) => {
-            this.filterGrid(e);
-        });
+            this.filterVal = e.target.value;
 
-        this.tList.addEventListener("click", (e) => {
-            console.log(e);
+            this.renderRows();
         });
     }
 
@@ -39,18 +37,15 @@ export default class Grid {
     }
 
     getData() {
-        return this.filtered || this.data;
+        if (this.filterVal) {
+            return this.data.filter(item => this.isMatching(item.first_name, this.filterVal) || this.isMatching(item.last_name, this.filterVal));
+        }
+
+        return this.data;
     }
 
     isMatching (full, chunk) {
         return full.toUpperCase().indexOf(chunk.toUpperCase()) !== -1;
-    }
-
-    filterGrid(e) {
-        let val = e.target.value;
-        this.filtered = this.data.filter(item => this.isMatching(item.first_name, val) || this.isMatching(item.last_name, val));
-
-        this.renderRows();
     }
 
     setTitleName(name) {
@@ -68,7 +63,6 @@ export default class Grid {
     }
 
     renderRows() {
-        console.log(`Render ${this.constructor.name}`);
         let tList = this.tList.cloneNode();
         let data = this.getData();
 
@@ -86,18 +80,15 @@ export default class Grid {
     createRow(tList, rowData) {
         let item = createFrag('#book', rowData);
 
-        
-
         item.querySelector('.js-add').addEventListener('click', (e) => {
-           let el = this.getGridElem(e);
-           
-           let gridName  = el.getAttribute("data-grid-name");
-           let userid = parseInt(el.getAttribute("data-id"), 10);
-
-           console.log(e);
+            this.clickHandler(rowData.id);
         });
 
         tList.appendChild(item);
+    }
+
+    clickHandler(id) {
+
     }
 
     setData(data) {

@@ -7,10 +7,10 @@ export default class FriendsGrid extends Grid {
   }
 
   init() {
-      this.setTitleName("Ваши друзья");
-      this.entity = new FriendsEntity();
-      this.reload();
+    this.setTitleName("Ваши друзья");
+    this.entity = new FriendsEntity();
+    this.reload();
 
-      super.init();
+    super.init();
   }
 }
