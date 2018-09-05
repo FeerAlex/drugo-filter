@@ -1,4 +1,4 @@
-import { createFrag, getElementUnderClientXY } from './utils';
+import { createFrag, getElementUnderClientXY } from './modules/utils';
 import FriendsGrid from './FriendsGrid';
 import SpisokGrid from './SpisokGrid';
 
@@ -9,11 +9,11 @@ export default class App {
 
     this.drag = {};
 
-    this.init();
-    this.addListener();
-
     this.onDragMouseMove = this.onDragMouseMove.bind(this);
     this.onDragMouseUp = this.onDragMouseUp.bind(this);
+
+    this.init();
+    this.addListener();
   }
 
   init() {

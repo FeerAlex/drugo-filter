@@ -1,4 +1,5 @@
-import { createFrag } from '../utils';
+import { createFrag } from './utils';
+import Scrollbar from './Scrollbar';
 
 export default class Grid {
     constructor(opts) {
@@ -75,6 +76,8 @@ export default class Grid {
 
         this.tBody.replaceChild(tList, this.tList);
         this.tList = tList;
+
+        new Scrollbar(this.tList);
     }
 
     createRow(tList, rowData) {

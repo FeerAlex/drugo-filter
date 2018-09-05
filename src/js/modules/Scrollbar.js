@@ -1,89 +1,124 @@
 export default class Scrollbar {
   constructor(container) {
+    this.body = container;
 
-    this.container = container;
-    this.containerHeight = container.offsetHeight;
+    this.bScroll = {
+      delta: Math.min(this.body.offsetHeight / 3,
+        (this.body.scrollHeight - this.body.offsetHeight) / 4),
+      offsetY: 0
+    }
 
-    this.isDown = false;
-    this.startY = null;
-    this.scrollTop = null;
-    this.scrollHeight = this.container.scrollHeight;
-    this.scrollIter = 60;
-    this.trackScrollTop = 0;
+    this.onScrollMouseDown = this.onScrollMouseDown.bind(this);
+    this.onScrollMouseMove = this.onScrollMouseMove.bind(this);
+    this.onScrollMouseUp = this.onScrollMouseUp.bind(this);
+    this.onScrollMousewheel = this.onScrollMousewheel.bind(this);
 
     this.init();
   }
 
   init() {
-    if (this.scrollHeight <= this.containerHeight) return;
+    if (!(this.body.scrollHeight - this.body.offsetHeight)) {
+      return false;
+    }
 
     this.createScroll();
     this.addListener();
   }
 
-  addListener() {
-    this.container.addEventListener('mousewheel', (e) => {
-      this.scrollContainer(e);
-    });
-
-    // this.scroll.addEventListener('mousedown', (e) => {
-      // this.isDown = true;
-    //   this.startY = e.pageY - this.container.offsetTop;
-    //   this.scrollTop = this.container.scrollTop;
-    //   console.log(this.startY);
-    // });
-
-    // this.scroll.addEventListener('mouseleave', () => {
-    //   this.isDown = false;
-    // });
-
-    // this.scroll.addEventListener('mouseup', () => {
-    //   this.isDown = false;
-    // });
-
-    // this.scroll.addEventListener('mousemove', (e) => {
-    //   if(!this.isDown) return;
-    //   e.preventDefault();
-    //   const y = e.pageY - this.container.offsetTop;
-    //   const walk = (y - this.startY) * (this.height);
-    //   this.container.scrollTop = this.scrollTop - walk;
-    // });
-  }
-
-  scrollContainer(e) {
-    this.scrollTop = this.container.scrollTop;
-    let b = (this.scroll.offsetHeight - 80) / (this.container.scrollHeight / this.scrollIter);
-
-    if (e.deltaY < 0) {
-      this.container.scrollTop = this.scrollTop - this.scrollIter;
-
-      if (this.scrollTrack.offsetTop > 0) {
-        this.trackScrollTo(-b);
-      }
-    } else {
-      this.container.scrollTop = this.scrollTop + this.scrollIter;
-
-      if ((this.scrollTrack.offsetTop + this.scrollTrack.offsetHeight - this.scroll.offsetHeight) < 0) {
-        this.trackScrollTo(b);
-      }
-    }
-  }
-
-  trackScrollTo(m) {
-    this.trackScrollTop += m;
-    this.scrollTrack.style.marginTop = this.trackScrollTop + 'px';
-  }
-
   createScroll() {
-    let div = document.createElement('div');
-
-    this.scroll = div.cloneNode();
+    this.scroll = document.createElement('div');
     this.scroll.classList.add('scroll');
+    this.scroll.style.height = this.body.scrollHeight + 'px';
 
-    this.scrollTrack = div.cloneNode();
+    this.scrollTrack = document.createElement('div');
     this.scrollTrack.classList.add('scroll-track');
 
     this.scroll.appendChild(this.scrollTrack);
-    this.container.appendChild(this.scroll);
+    this.body.appendChild(this.scroll);
+  }
+
+  addListener() {
+    this.body.addEventListener('mousewheel', this.onScrollMousewheel);
+
+    this.scrollTrack.addEventListener('mousedown', this.onScrollMouseDown);
+  }
+
+  onScrollMouseDown(e) {
+    if (!this.bScroll) return false;
+
+    this.bScroll.offsetY = e.offsetY;
+
+    document.addEventListener("mousemove", this.onScrollMouseMove);
+    document.addEventListener("mouseup", this.onScrollMouseUp);
+  }
+
+  onScrollMousewheel(e) {
+    if (!this.bScroll) return false;
+
+    let fScrollTop = this.body.scrollTop - Math.sign(e.wheelDelta || -e.detail) * this.bScroll.delta;
+
+    // Ограничения
+    fScrollTop = Math.max(fScrollTop, 0);
+    fScrollTop = Math.min(fScrollTop, this.body.scrollHeight - this.body.offsetHeight);
+
+    // Защита от деления на 0
+    if (!(this.body.scrollHeight - this.body.offsetHeight)) return false;
+
+    // Ищем позицию ползунка
+    let h = fScrollTop / (this.body.scrollHeight - this.body.offsetHeight);
+    let pos = fScrollTop + this.body.offsetHeight * h;
+    pos -= this.scrollTrack.offsetHeight * h;
+
+    this.scrollTrack.style.top = pos + 'px';
+    this.body.scrollTop = fScrollTop;
+
+    return false;
+  }
+
+  onScrollMouseMove(e) {
+    if (!this.bScroll) return false;
+
+    // Получили высоту кнопки
+    let butH = this.scrollTrack.offsetHeight;
+
+    let top = this.body.getBoundingClientRect().top + document.body.scrollTop;
+
+    // Считаем разницу
+    let diff = -(top - e.clientY) - this.bScroll.offsetY;
+
+    console.log(window.scrollTop);
+
+    // Находим процент прокрутки / 100
+    let h = diff / (this.body.offsetHeight - butH);
+    h = Math.max(h, 0);
+    h = Math.min(h, 1);
+
+    // Новую позицию    
+    let fScrollTop = h * (this.body.scrollHeight - this.body.offsetHeight);
+    // Находим позицию ползунка
+    let scrollPos = fScrollTop + h * (this.body.offsetHeight - butH);
+
+    // Двигаем документ
+    this.body.scrollTop = fScrollTop;
+
+    // Двигаем
+    this.scrollTrack.style.top = scrollPos + 'px';
+
+    this.removeSelection();
+
+    return false;
+  }
+
+  onScrollMouseUp() {
+    document.removeEventListener("mousemove", this.onScrollMouseMove);
+    document.removeEventListener("mouseup", this.onScrollMouseUp);
+  }
+
+  removeSelection(){
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    } else if (document.selection && document.selection.clear) {
+      document.selection.clear();
+    }
   }
 }

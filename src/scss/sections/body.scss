@@ -16,8 +16,9 @@
 }
 .grid-tlist {
     height: 100%;
-    overflow: auto;
-    margin: 0 15px;
+    overflow: hidden;
+    padding: 0 15px;
+    position: relative;
 }
 .grid-tlist[data-grid-name="SpisokGrid"] .icon--add {
     transform: rotate(45deg);
