@@ -6,13 +6,17 @@ import config from './config.json';
 let friends = localStorage.friends;
 
 let load = async () => {
-  await vk.login(config.vk.apiID, 2);
-  let data = await vk.getFriends({ fields: 'photo_100' });
+  try {
+    await vk.login(config.vk.apiID, 2);
+    let data = await vk.getFriends({ fields: 'photo_100' });
 
-  localStorage.friends = JSON.stringify(data.items);
-  localStorage.spisok = null;
+    localStorage.friends = JSON.stringify(data.items);
+    localStorage.spisok = null;
 
-  await new App();
+    await new App();
+  } catch (err) {
+    alert(err);
+  }
 };
 
 if (friends) {

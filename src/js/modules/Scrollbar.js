@@ -86,8 +86,6 @@ export default class Scrollbar {
     // Считаем разницу
     let diff = -(top - e.clientY) - this.bScroll.offsetY;
 
-    console.log(window.scrollTop);
-
     // Находим процент прокрутки / 100
     let h = diff / (this.body.offsetHeight - butH);
     h = Math.max(h, 0);
