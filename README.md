@@ -1,7 +1,10 @@
 # Другофильтр
 
 ## Установка
-* --------------
+* git clone [https://github.com/FeerAlex/drugo-filter.git](https://github.com/FeerAlex/drugo-filter.git)
+* cd drugo-filter
+* yarn
+* yarn dev - сборка и запуск сервера
 
 ## Список задач
   - [X] Поиск друзей по списку
