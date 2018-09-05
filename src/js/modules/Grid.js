@@ -22,6 +22,8 @@ export default class Grid {
 
             this.renderRows();
         });
+
+        this.tBody.addEventListener('click', this.toggleUser.bind(this));
     }
 
     findDropTarget (e) {
@@ -33,8 +35,15 @@ export default class Grid {
         return elem;
     }
 
-    getGridElem(e) {
-        return e.target.closest('.grid-tlist-item');
+    toggleUser(e) {
+        if (!e.target.classList.contains('js-add')) {
+            return;
+        }
+
+        let elem = e.target.closest('.grid-tlist-item');
+        let id = parseInt(elem.getAttribute("data-id"), 10);
+
+        this.clickHandler(id);
     }
 
     getData() {
@@ -65,29 +74,21 @@ export default class Grid {
 
     renderRows() {
         let tList = this.tList.cloneNode();
-        let data = this.getData();
+        let data = { list: this.getData() };
 
         if (!data) {
             console.log("Данные отсутствуют!");
             return;
         }
 
-        data.map(rowData => this.createRow(tList, rowData));
+        let items = createFrag('#items', data);
+
+        tList.appendChild(items);
 
         this.tBody.replaceChild(tList, this.tList);
         this.tList = tList;
 
         new Scrollbar(this.tList);
-    }
-
-    createRow(tList, rowData) {
-        let item = createFrag('#book', rowData);
-
-        item.querySelector('.js-add').addEventListener('click', (e) => {
-            this.clickHandler(rowData.id);
-        });
-
-        tList.appendChild(item);
     }
 
     clickHandler(id) {
